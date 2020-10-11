@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9b3713ab-ff67-4289-9811-e0ce28c1bfa9/deploy-status)](https://app.netlify.com/sites/ejelome-react-hooks-counter/deploys)
+
 # react-hooks-counter
 
 Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.html) with a counter
