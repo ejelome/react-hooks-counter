@@ -1,0 +1,10 @@
+{
+  "extends": ["prettier"],
+  "parser": "babel-eslint",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "import/order": "off",
+    "sort-imports": "off",
+    "simple-import-sort/sort": "error"
+  }
+}
