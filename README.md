@@ -21,6 +21,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [2.2. Dont's](#22-donts)
     - [3. Basic Hooks](#3-basic-hooks)
       - [3.1. useState](#31-usestate)
+      - [3.2. useEffect](#32-useeffect)
   - [References](#references)
   - [License](#license)
 
@@ -159,6 +160,63 @@ Don't call Hooks &hellip;
 > - For more complicated state&mdash;objects with multiple sub-values; use [useReducer](https://reactjs.org/docs/hooks-reference.html#usereducer) instead
 > - Calling the update function outside a callback throws an error (`Too many re-renders`)
 > - _Stateless components_ using React state are called _function components_
+
+#### 3.2. useEffect
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useState } from "react";
++import React, { useEffect, useState } from "react";
+
+ const App = () => {
+   const initialState = 0;
+   const [count, setCount] = useState(initialState);
+
+   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+
+   const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+
++  useEffect(() => {
++    console.log(count);
++    return console.clear;
++  }, [count]);
++
+   return (
+     <>
+       <h1>Counter</h1>
+       <button onClick={handleDecrement}>-</button>
+       <code>{count}</code>
+       <button onClick={handleIncrement}>+</button>
+     </>
+   );
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-32-qfnmt)
+
+> **NOTES:**
+>
+> - `useEffect` or _Effect Hook_ allows side-effects in function components
+> - Similar with `useState` (or _State Hook_), it can be used more than once
+> - It is the combination of `class`' lifecycle methods: `component(Did(Mount|Update)|WillUnmount)`
+> - Unlike `componentDid(Mount|Update)`, it doesn't block the browser when updating the screen
+> - It runs _after_ the first and subsequent re-renders
+> - The callbacks it contains are what we call "effects"
+> - The callback is fired _after_ the browser has painted
+> - It is implemented in two ways: with or without cleanup
+> - Without cleanup is only calling an effect function
+> - With cleanup is `return`ing a function to do cleanup
+> - The cleanup is applied _before_ the next effect is called
+> - To skip effect, pass an array (`[]`) as second argument
+> - If array is empty, effect is applied only on first render
+> - If array has state and its value is similar to previous state, effect is skipped
+> - Using `useState` inside `useEffect` throws an error (`Maximum update depth exceeded`)
 
 ---
 
