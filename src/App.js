@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const App = () => {
   const initialState = 0;
@@ -7,6 +7,11 @@ const App = () => {
   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
   const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+
+  useEffect(() => {
+    console.log(count);
+    return console.clear;
+  }, [count]);
 
   return (
     <>
