@@ -1,25 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const App = () => {
-  const initialState = 0;
-  const [count, setCount] = useState(initialState);
+const initialContext = {};
+const CounterContext = createContext(initialContext);
 
-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+const CounterProvider = ({ children }) => {
+  const initialCount = 0;
+  const [count, setCount] = useState(initialCount);
 
-  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+  const increment = () => setCount((prevCount) => prevCount + 1);
+  const decrement = () => setCount((prevCount) => prevCount - 1);
+
+  const { Provider } = CounterContext;
+  const values = { count, increment, decrement };
+
+  return <Provider value={values}>{children}</Provider>;
+};
+
+const Counter = () => {
+  const { count, increment, decrement } = useContext(CounterContext);
 
   useEffect(() => {
     console.log(count);
+
     return console.clear;
   }, [count]);
 
   return (
     <>
       <h1>Counter</h1>
-      <button onClick={handleDecrement}>-</button>
+      <button onClick={decrement}>-</button>
       <code>{count}</code>
-      <button onClick={handleIncrement}>+</button>
+      <button onClick={increment}>+</button>
     </>
+  );
+};
+
+const App = () => {
+  return (
+    <CounterProvider>
+      <Counter />
+    </CounterProvider>
   );
 };
 
