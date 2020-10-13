@@ -16,6 +16,9 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
   - [Usage](#usage)
   - [Lessons](#lessons)
     - [1. Introduction](#1-introduction)
+    - [2. Rules of Hooks](#2-rules-of-hooks)
+      - [2.1. Do's](#21-dos)
+      - [2.2. Dont's](#22-donts)
   - [References](#references)
   - [License](#license)
 
@@ -56,6 +59,29 @@ See <https://ejelome-react-hooks-counter.netlify.app>.
 - They allow reuse of stateful logic without changing component hierarchy
 - They don’t work inside `class`es and their names always start with `use`
 - They are special functions that lets "hook into" React features (e.g. `useState` for state)
+
+### 2. Rules of Hooks
+
+React Hooks require **two** important rules to be followed.
+
+#### 2.1. Do's
+
+Call Hooks &hellip;
+
+1. at the top level to ensure the same order to correctly preserve state of Hooks
+2. from React functions (e.g. function components and custom Hooks)
+
+#### 2.2. Dont's
+
+Don't call Hooks &hellip;
+
+1. inside loops, conditions or nested functions
+2. from regular JavaScript functions
+
+> **NOTES:**
+>
+> - These two important rules can be checked with [eslint-plugin-react-hooks](https://npmjs.com/package/eslint-plugin-react-hooks)
+> - `eslint-plugin-react-hooks` is included in [CRA](https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/package.json#L29)'s [eslint-config-react-app](https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/package.json#L29)
 
 ---
 
