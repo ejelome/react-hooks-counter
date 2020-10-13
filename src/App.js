@@ -1,26 +1,46 @@
-import "./App.css";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-import logo from "./logo.svg";
+const initialContext = {};
+const CounterContext = createContext(initialContext);
 
-function App() {
+const CounterProvider = ({ children }) => {
+  const initialCount = 0;
+  const [count, setCount] = useState(initialCount);
+
+  const increment = () => setCount((prevCount) => prevCount + 1);
+  const decrement = () => setCount((prevCount) => prevCount - 1);
+
+  const { Provider } = CounterContext;
+  const values = { count, increment, decrement };
+
+  return <Provider value={values}>{children}</Provider>;
+};
+
+const Counter = () => {
+  const { count, increment, decrement } = useContext(CounterContext);
+
+  useEffect(() => {
+    console.log(count);
+
+    return console.clear;
+  }, [count]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Counter</h1>
+      <button onClick={decrement}>-</button>
+      <code>{count}</code>
+      <button onClick={increment}>+</button>
+    </>
   );
-}
+};
+
+const App = () => {
+  return (
+    <CounterProvider>
+      <Counter />
+    </CounterProvider>
+  );
+};
 
 export default App;
