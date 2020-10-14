@@ -23,6 +23,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [3.1. useState](#31-usestate)
       - [3.2. useEffect](#32-useeffect)
       - [3.3. useContext](#33-usecontext)
+    - [4. Custom Hooks](#4-custom-hooks)
   - [References](#references)
   - [License](#license)
 
@@ -318,6 +319,94 @@ Don't call Hooks &hellip;
 > - If the context `value` changes, it will trigger a re-render to the calling component
 > - The `createContext` creates the object context
 > - The initial context `value` can be set in `createContext`
+
+### 4. Custom Hooks
+
+<details>
+  <summary>src/useLogger.js</summary>
+
+```diff
++import { useEffect } from "react";
++
++const useLogger = (state) =>
++  useEffect(() => {
++    console.log(state);
++    return console.clear;
++  }, [state]);
++
++export default useLogger;
+```
+
+</details>
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+ import React, { createContext, useContext, useEffect, useState } from "react";
+
++import useLogger from "./useLogger";
++
+ const initialContext = {};
+ const CounterContext = createContext(initialContext);
+
+ const CounterProvider = ({ children }) => {
+   const initialCount = 0;
+   const [count, setCount] = useState(initialCount);
+
+   const increment = () => setCount((prevCount) => prevCount + 1);
+   const decrement = () => setCount((prevCount) => prevCount - 1);
+
+   const { Provider } = CounterContext;
+   const values = { count, increment, decrement };
+
+   return <Provider value={values}>{children}</Provider>;
+ };
+
+ const Counter = () => {
+   const { count, increment, decrement } = useContext(CounterContext);
+
+-  useEffect(() => {
+-    console.log(count);
+-
+-    return console.clear;
+-  }, [count]);
++  useLogger(count);
+
+   return (
+     <>
+       <h1>Counter</h1>
+       <button onClick={decrement}>-</button>
+       <code>{count}</code>
+       <button onClick={increment}>+</button>
+     </>
+   );
+ };
+
+ const App = () => {
+   return (
+     <CounterProvider>
+       <Counter />
+     </CounterProvider>
+   );
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-4-wpoe7)
+
+> **NOTES:**
+>
+> - Custom Hooks allows extracting component logic into reusable functions
+> - They eliminate the need for using [render props](https://reactjs.org/docs/render-props.html) or [HOC](https://reactjs.org/docs/higher-order-components.html) to share component logic
+> - They are JavaScript functions which name starts with `use` that can call other Hooks
+> - They enable extracting common code between two functions into a separate function
+> - They are conventions following the design of Hooks rather than React features
+> - They must be prefixed with `use` to be able to be checked against [Rules of Hooks](https://reactjs.org/docs/hooks-rules.html)
+> - Similar with `use(State|Effect)` Hooks, they don't share state and effects
 
 ---
 
