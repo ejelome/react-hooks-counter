@@ -24,6 +24,8 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [3.2. useEffect](#32-useeffect)
       - [3.3. useContext](#33-usecontext)
     - [4. Custom Hooks](#4-custom-hooks)
+    - [5. Additional Hooks](#5-additional-hooks)
+      - [5.1. useReducer](#51-usereducer)
   - [References](#references)
   - [License](#license)
 
@@ -407,6 +409,95 @@ Don't call Hooks &hellip;
 > - They are conventions following the design of Hooks rather than React features
 > - They must be prefixed with `use` to be able to be checked against [Rules of Hooks](https://reactjs.org/docs/hooks-rules.html)
 > - Similar with `use(State|Effect)` Hooks, they don't share state and effects
+
+### 5. Additional Hooks
+
+#### 5.1. useReducer
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { createContext, useContext, useEffect, useState } from "react";
++import React, { useReducer } from "react";
+
+ import useLogger from "./useLogger";
+
+-const initialContext = {};
+-const CounterContext = createContext(initialContext);
+-
+-const CounterProvider = ({ children }) => {
+-  const initialCount = 0;
+-  const [count, setCount] = useState(initialCount);
+-
+-  const increment = () => setCount((prevCount) => prevCount + 1);
+-  const decrement = () => setCount((prevCount) => prevCount - 1);
+-
+-  const { Provider } = CounterContext;
+-  const values = { count, increment, decrement };
+-
+-  return <Provider value={values}>{children}</Provider>;
++const reducer = (state, action) => {
++  switch (action.type) {
++    case "increment":
++      return state + 1;
++    case "decrement":
++      return state - 1;
++    default:
++      return state;
++  }
+ };
+
+ const Counter = () => {
+-  const { count, increment, decrement } = useContext(CounterContext);
++  const initialState = 0;
++  const [count, dispatch] = useReducer(reducer, initialState);
++
++  const handleIncrement = () => dispatch({ type: "increment" });
++  const handleDecrement = () => dispatch({ type: "decrement" });
+
+   useLogger(count);
+
+   return (
+     <>
+       <h1>Counter</h1>
+-      <button onClick={decrement}>-</button>
++      <button onClick={handleDecrement}>-</button>
+       <code>{count}</code>
+-      <button onClick={increment}>+</button>
++      <button onClick={handleIncrement}>+</button>
+     </>
+   );
+ };
+
+-const App = () => {
+-  return (
+-    <CounterProvider>
+-      <Counter />
+-    </CounterProvider>
+-  );
+-};
++const App = () => <Counter />;
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-51-wpoe7)
+
+> **NOTES:**
+>
+> - `useReducer` or _Reducer Hook_ is an alternative for `useState` for complex state logic
+> - While `useState` is for one-off primitives, `useReducer` is for multiple sub-values
+> - It accepts a reducer (a function) with `(state, action)` and returns a `newState`
+> - It returns a pair of values as an array (`[]`): `[<state>, <dispatch>]`
+> - `state` contains the current state along with its modified sub-values
+> - `dispatch` contains `action` with `type` to determine the action used on `state`
+> - `dispatch` can contain a `payload` to provide a previous `state` to be modified
+> - Pass `dispatch` as `value` on `*Context.Provider` for optimized deep updates
+> - To lazy load initialization, pass an `init(initialState)` function as third argument
+> - Returning the same value skips re-rendering its children or firing effects
 
 ---
 
