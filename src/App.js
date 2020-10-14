@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+import useLogger from "./useLogger";
+
 const initialContext = {};
 const CounterContext = createContext(initialContext);
 
@@ -19,11 +21,7 @@ const CounterProvider = ({ children }) => {
 const Counter = () => {
   const { count, increment, decrement } = useContext(CounterContext);
 
-  useEffect(() => {
-    console.log(count);
-
-    return console.clear;
-  }, [count]);
+  useLogger(count);
 
   return (
     <>
