@@ -1,43 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import useLogger from "./useLogger";
 
-const initialContext = {};
-const CounterContext = createContext(initialContext);
-
-const CounterProvider = ({ children }) => {
-  const initialCount = 0;
+const App = () => {
+  const initialCount = () => 0;
   const [count, setCount] = useState(initialCount);
 
-  const increment = () => setCount((prevCount) => prevCount + 1);
-  const decrement = () => setCount((prevCount) => prevCount - 1);
+  const initialElement = null;
+  const codeRef = useRef(initialElement);
 
-  const { Provider } = CounterContext;
-  const values = { count, increment, decrement };
+  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
-  return <Provider value={values}>{children}</Provider>;
-};
-
-const Counter = () => {
-  const { count, increment, decrement } = useContext(CounterContext);
+  const handleHideShow = () => {
+    let e = codeRef.current;
+    let visibility = e.style.visibility || "visible";
+    e.style.visibility = visibility === "visible" ? "hidden" : "visible";
+  };
 
   useLogger(count);
 
   return (
     <>
       <h1>Counter</h1>
-      <button onClick={decrement}>-</button>
-      <code>{count}</code>
-      <button onClick={increment}>+</button>
+      <button onClick={handleDecrement}>-</button>
+      <code ref={codeRef}>{count}</code>
+      <button onClick={handleIncrement}>+</button>
+      <button onClick={handleHideShow}>hide/show</button>
     </>
-  );
-};
-
-const App = () => {
-  return (
-    <CounterProvider>
-      <Counter />
-    </CounterProvider>
   );
 };
 
