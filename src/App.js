@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import useLogger from "./useLogger";
 
@@ -9,47 +9,26 @@ const App = () => {
   const handleIncrement = () => setCount((prevCount) => prevCount + 1);
   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
-  const initialTheme = () => "light";
-  const [theme, setTheme] = useState(initialTheme);
-
-  const handleToggleTheme = () =>
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-
-  const themes = {
-    light: {
-      background: "white",
-      color: "black",
-    },
-    dark: {
-      background: "black",
-      color: "white",
-    },
+  let expensiveCallback = (n) => {
+    const numbers = [...Array(n + 1).keys()].map((i) => i);
+    return numbers[numbers.length - 1] - count;
   };
-
-  const initialTitle = () => "hello, world";
-  const [title, setTitle] = useState(initialTitle);
-
-  let getRandomTitle = (count) => {
-    return `Counter #${count}`;
-  };
-
-  getRandomTitle = useCallback(getRandomTitle, [count]);
-
-  useEffect(() => {
-    setTitle(() => getRandomTitle(count));
-    console.log(`getRandomTitle(${count})`);
-  }, [getRandomTitle]);
+  const expensiveTotal = 10000000; // 10,000,000
+  const expensiveValue = useMemo(() => expensiveCallback(expensiveTotal), [
+    expensiveCallback,
+  ]);
 
   useLogger(count);
 
   return (
-    <div style={themes[theme]}>
-      <h1>{title}</h1>
+    <>
+      <h1>Counter</h1>
       <button onClick={handleDecrement}>-</button>
-      <code>{count}</code>
+      <code>
+        {count} / {expensiveValue}
+      </code>
       <button onClick={handleIncrement}>+</button>
-      <button onClick={handleToggleTheme}>{theme}</button>
-    </div>
+    </>
   );
 };
 
