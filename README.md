@@ -27,6 +27,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
     - [5. Additional Hooks](#5-additional-hooks)
       - [5.1. useReducer](#51-usereducer)
       - [5.2. useCallback](#52-usecallback)
+      - [5.3. useMemo](#53-usememo)
   - [References](#references)
   - [License](#license)
 
@@ -598,6 +599,96 @@ Don't call Hooks &hellip;
 > - It ensures that the callback is only re-created when its dependencies changed
 > - It prevents re-creation of the same callback when the component using it re-renders
 > - It accepts a callback and its dependencies that will only trigger its re-creation when changed
+
+#### 5.3. useMemo
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useCallback, useEffect, useState } from "react";
++import React, { useMemo, useState } from "react";
+
+ import useLogger from "./useLogger";
+
+ const App = () => {
+   const initialCount = () => 0;
+   const [count, setCount] = useState(initialCount);
+
+   const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+
+-  const initialTheme = () => "light";
+-  const [theme, setTheme] = useState(initialTheme);
+-
+-  const handleToggleTheme = () =>
+-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+-
+-  const themes = {
+-    light: {
+-      background: "white",
+-      color: "black",
+-    },
+-    dark: {
+-      background: "black",
+-      color: "white",
+-    },
++  let expensiveCallback = (n) => {
++    const numbers = [...Array(n + 1).keys()].map((i) => i);
++    return numbers[numbers.length - 1] - count;
+   };
+-
+-  const initialTitle = () => "hello, world";
+-  const [title, setTitle] = useState(initialTitle);
+-
+-  let getRandomTitle = (count) => {
+-    return `Counter #${count}`;
+-  };
+-
+-  getRandomTitle = useCallback(getRandomTitle, [count]);
+-
+-  useEffect(() => {
+-    setTitle(() => getRandomTitle(count));
+-    console.log(`getRandomTitle(${count})`);
+-  }, [getRandomTitle]);
++  const expensiveTotal = 10000000; // 10,000,000
++  const expensiveValue = useMemo(() => expensiveCallback(expensiveTotal), [
++    expensiveCallback,
++  ]);
+
+   useLogger(count);
+
+   return (
+-    <div style={themes[theme]}>
+-      <h1>{title}</h1>
++    <>
++      <h1>Counter</h1>
+       <button onClick={handleDecrement}>-</button>
+-      <code>{count}</code>
++      <code>
++        {count} / {expensiveValue}
++      </code>
+       <button onClick={handleIncrement}>+</button>
+-      <button onClick={handleToggleTheme}>{theme}</button>
+-    </div>
++    </>
+   );
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-53-fnq10)
+
+> **NOTES:**
+>
+> - `useMemo` returns a cached (momized) value
+> - It checks for referential equality between renders on values
+> - It ensures that the callback is only invoked when its dependencies changed
+> - It prevents invoking the same callback when the component using it re-renders
+> - It accepts an invoked callback and its dependencies that will only trigger its re-computation when changed
 
 ---
 
