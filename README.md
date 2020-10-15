@@ -26,6 +26,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
     - [4. Custom Hooks](#4-custom-hooks)
     - [5. Additional Hooks](#5-additional-hooks)
       - [5.1. useReducer](#51-usereducer)
+      - [5.2. useCallback](#52-usecallback)
   - [References](#references)
   - [License](#license)
 
@@ -498,6 +499,105 @@ Don't call Hooks &hellip;
 > - Pass `dispatch` as `value` on `*Context.Provider` for optimized deep updates
 > - To lazy load initialization, pass an `init(initialState)` function as third argument
 > - Returning the same value skips re-rendering its children or firing effects
+
+#### 5.2. useCallback
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useReducer } from "react";
++import React, { useCallback, useEffect, useState } from "react";
+
+ import useLogger from "./useLogger";
+
+-const reducer = (state, action) => {
+-  switch (action.type) {
+-    case "increment":
+-      return state + 1;
+-    case "decrement":
+-      return state - 1;
+-    default:
+-      return state;
+-  }
+-};
+-
+-const Counter = () => {
+-  const initialState = 0;
+-  const [count, dispatch] = useReducer(reducer, initialState);
+-
+-  const handleIncrement = () => dispatch({ type: "increment" });
+-  const handleDecrement = () => dispatch({ type: "decrement" });
++const App = () => {
++  const initialCount = () => 0;
++  const [count, setCount] = useState(initialCount);
++
++  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
++  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
++
++  const initialTheme = () => "light";
++  const [theme, setTheme] = useState(initialTheme);
++
++  const handleToggleTheme = () =>
++    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
++
++  const themes = {
++    light: {
++      background: "white",
++      color: "black",
++    },
++    dark: {
++      background: "black",
++      color: "white",
++    },
++  };
++
++  const initialTitle = () => "hello, world";
++  const [title, setTitle] = useState(initialTitle);
++
++  let getRandomTitle = (count) => {
++    return `Counter #${count}`;
++  };
++
++  getRandomTitle = useCallback(getRandomTitle, [count]);
++
++  useEffect(() => {
++    setTitle(() => getRandomTitle(count));
++    console.log(`getRandomTitle(${count})`);
++  }, [getRandomTitle]);
+
+   useLogger(count);
+
+   return (
+-    <>
+-      <h1>Counter</h1>
++    <div style={themes[theme]}>
++      <h1>{title}</h1>
+       <button onClick={handleDecrement}>-</button>
+       <code>{count}</code>
+       <button onClick={handleIncrement}>+</button>
+-    </>
++      <button onClick={handleToggleTheme}>{theme}</button>
++    </div>
+   );
+ };
+
+-const App = () => <Counter />;
+-
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-router-lesson-52-be5ei)
+
+> **NOTES:**
+>
+> - `useCallback` returns a cached ([momized](https://wikipedia.org/wiki/Memoization)) callback
+> - It checks for [referential equality](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness) between renders on functions
+> - It ensures that the callback is only re-created when its dependencies changed
+> - It prevents re-creation of the same callback when the component using it re-renders
+> - It accepts a callback and its dependencies that will only trigger its re-creation when changed
 
 ---
 
