@@ -28,6 +28,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [5.1. useReducer](#51-usereducer)
       - [5.2. useCallback](#52-usecallback)
       - [5.3. useMemo](#53-usememo)
+      - [5.4. useRef](#54-useref)
   - [References](#references)
   - [License](#license)
 
@@ -689,6 +690,130 @@ Don't call Hooks &hellip;
 > - It ensures that the callback is only invoked when its dependencies changed
 > - It prevents invoking the same callback when the component using it re-renders
 > - It accepts an invoked callback and its dependencies that will only trigger its re-computation when changed
+
+#### 5.4. useRef
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useCallback, useEffect, useState } from "react";
++import React, { useRef, useState } from "react";
+
+ import useLogger from "./useLogger";
+
+ const App = () => {
+   const initialCount = () => 0;
+   const [count, setCount] = useState(initialCount);
+
+-  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+-
+-  const initialTheme = () => "light";
+-  const [theme, setTheme] = useState(initialTheme);
+-
+-  const handleToggleTheme = () =>
+-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+-
+-  const themes = {
+-    light: {
+-      background: "white",
+-      color: "black",
+-    },
+-    dark: {
+-      background: "black",
+-      color: "white",
+-    },
+-  };
+-
+-  const initialTitle = () => "hello, world";
+-  const [title, setTitle] = useState(initialTitle);
+-
+-  let getRandomTitle = (count) => {
+-    return `Counter #${count}`;
+-  };
+-
+-  getRandomTitle = useCallback(getRandomTitle, [count]);
+-
+-  useEffect(() => {
+-    setTitle(() => getRandomTitle(count));
+-    console.log(`getRandomTitle(${count})`);
+-  }, [getRandomTitle]);
+-
+-  useLogger(count);
+-
+-  return (
+-    <div style={themes[theme]}>
+-      <h1>{title}</h1>
+-      <button onClick={handleDecrement}>-</button>
+-      <code>{count}</code>
+-      <button onClick={handleIncrement}>+</button>
+-      <button onClick={handleToggleTheme}>{theme}</button>
+-    </div>
+-  );
+-};
+-
+-export default App;
+-import React, { useMemo, useState } from "react";
+-
+-import useLogger from "./useLogger";
+-
+-const App = () => {
+-  const initialCount = () => 0;
+-  const [count, setCount] = useState(initialCount);
++  const initialElement = null;
++  const codeRef = useRef(initialElement);
+
+   const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+
+-  let expensiveCallback = (n) => {
+-    const numbers = [...Array(n + 1).keys()].map((i) => i);
+-    return numbers[numbers.length - 1] - count;
++  const handleHideShow = () => {
++    let e = codeRef.current;
++    let visibility = e.style.visibility || "visible";
++    e.style.visibility = visibility === "visible" ? "hidden" : "visible";
+   };
+-  const expensiveTotal = 10000000; // 10,000,000
+-  const expensiveValue = useMemo(() => expensiveCallback(expensiveTotal), [
+-    expensiveCallback,
+-  ]);
+
+   useLogger(count);
+
+   return (
+     <>
+       <h1>Counter</h1>
+       <button onClick={handleDecrement}>-</button>
+-      <code>
+-        {count} / {expensiveValue}
+-      </code>
++      <code ref={codeRef}>{count}</code>
+       <button onClick={handleIncrement}>+</button>
++      <button onClick={handleHideShow}>hide/show</button>
+     </>
+   );
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-router-lesson-54-svnbj)
+
+> **NOTES:**
+>
+> - `useRef` returns a mutable object accessed with `.current`
+> - It accepts an optional `initialValue` assigned to `current` property
+> - If no `initialValue` is specified, `current`'s property value is `undefined`
+> - It then creates a plain JavaScript object containing the property: `current`
+> - If passed as `ref` value in a component, it sets the value to that DOM node
+> - The DOM node passed to `ref` is similar with [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Element/querySelector)
+> - The returned object exists for the full lifetime of the component
+> - The returned object is the same object after component re-renders
+> - Changing the returned object value does not trigger a re-render
 
 ---
 
