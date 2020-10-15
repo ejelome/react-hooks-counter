@@ -1,37 +1,56 @@
-import React, { useReducer } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import useLogger from "./useLogger";
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "increment":
-      return state + 1;
-    case "decrement":
-      return state - 1;
-    default:
-      return state;
-  }
-};
+const App = () => {
+  const initialCount = () => 0;
+  const [count, setCount] = useState(initialCount);
 
-const Counter = () => {
-  const initialState = 0;
-  const [count, dispatch] = useReducer(reducer, initialState);
+  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
-  const handleIncrement = () => dispatch({ type: "increment" });
-  const handleDecrement = () => dispatch({ type: "decrement" });
+  const initialTheme = () => "light";
+  const [theme, setTheme] = useState(initialTheme);
+
+  const handleToggleTheme = () =>
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+
+  const themes = {
+    light: {
+      background: "white",
+      color: "black",
+    },
+    dark: {
+      background: "black",
+      color: "white",
+    },
+  };
+
+  const initialTitle = () => "hello, world";
+  const [title, setTitle] = useState(initialTitle);
+
+  let getRandomTitle = (count) => {
+    return `Counter #${count}`;
+  };
+
+  getRandomTitle = useCallback(getRandomTitle, [count]);
+
+  useEffect(() => {
+    setTitle(() => getRandomTitle(count));
+    console.log(`getRandomTitle(${count})`);
+  }, [getRandomTitle]);
 
   useLogger(count);
 
   return (
-    <>
-      <h1>Counter</h1>
+    <div style={themes[theme]}>
+      <h1>{title}</h1>
       <button onClick={handleDecrement}>-</button>
       <code>{count}</code>
       <button onClick={handleIncrement}>+</button>
-    </>
+      <button onClick={handleToggleTheme}>{theme}</button>
+    </div>
   );
 };
-
-const App = () => <Counter />;
 
 export default App;
