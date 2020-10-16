@@ -29,6 +29,8 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [5.2. useCallback](#52-usecallback)
       - [5.3. useMemo](#53-usememo)
       - [5.4. useRef](#54-useref)
+    - [6. Esoteric Hooks](#6-esoteric-hooks)
+      - [6.1. useImperativeHandle](#61-useimperativehandle)
   - [References](#references)
   - [License](#license)
 
@@ -814,6 +816,83 @@ Don't call Hooks &hellip;
 > - The returned object exists for the full lifetime of the component
 > - The returned object is the same object after component re-renders
 > - Changing the returned object value does not trigger a re-render
+
+### 6. Esoteric Hooks
+
+> _These hooks might create more problems than it solves, so it's best to avoid using them._
+
+#### 6.1. useImperativeHandle
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useRef, useState } from "react";
++import React, { forwardRef, useImperativeHandle, useRef } from "react";
+
+-import useLogger from "./useLogger";
++let FancyInput = (props, ref) => {
++  const inputRef = useRef();
+
+-const App = () => {
+-  const initialCount = () => 0;
+-  const [count, setCount] = useState(initialCount);
++  useImperativeHandle(ref, () => ({
++    focus: () => {
++      inputRef.current.focus();
++    },
++  }));
+
+-  const initialElement = null;
+-  const codeRef = useRef(initialElement);
++  return <input ref={inputRef} />;
++};
+
+-  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
++FancyInput = forwardRef(FancyInput);
+
+-  const handleHideShow = () => {
+-    let e = codeRef.current;
+-    let visibility = e.style.visibility || "visible";
+-    e.style.visibility = visibility === "visible" ? "hidden" : "visible";
+-  };
++const App = () => {
++  const initialElement = null;
++  const fancyInputRef = useRef(initialElement);
+
+-  useLogger(count);
++  const handleFocus = () => {
++    console.log(fancyInputRef.current); // only have focus property
++    fancyInputRef.current.focus();
++  };
+
+   return (
+     <>
+-      <h1>Counter</h1>
+-      <button onClick={handleDecrement}>-</button>
+-      <code ref={codeRef}>{count}</code>
+-      <button onClick={handleIncrement}>+</button>
+-      <button onClick={handleHideShow}>hide/show</button>
++      <FancyInput ref={fancyInputRef} />
++      <button onClick={handleFocus}>focus</button>
+     </>
+   );
+ };
+
+ export default App;
+
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-61-82shf)
+
+> **NOTES:**
+>
+> - `useImperativeHandle` modifies the returned DOM node it is ref'd with
+> - It is required to be used along with `forwardRef`
+> - It allows modifying or replacing DOM events
 
 ---
 
