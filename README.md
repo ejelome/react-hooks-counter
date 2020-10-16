@@ -31,6 +31,8 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [5.4. useRef](#54-useref)
     - [6. Esoteric Hooks](#6-esoteric-hooks)
       - [6.1. useImperativeHandle](#61-useimperativehandle)
+      - [6.2. useLayoutEffect](#62-uselayouteffect)
+        - [6.2.1. With useEffect (flickers)](#621-with-useeffect-flickers)
   - [References](#references)
   - [License](#license)
 
@@ -893,6 +895,65 @@ Don't call Hooks &hellip;
 > - `useImperativeHandle` modifies the returned DOM node it is ref'd with
 > - It is required to be used along with `forwardRef`
 > - It allows modifying or replacing DOM events
+
+#### 6.2. useLayoutEffect
+
+##### 6.2.1. With useEffect (flickers)
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { forwardRef, useImperativeHandle, useRef } from "react";
+-
+-let FancyInput = (props, ref) => {
+-  const inputRef = useRef();
+-  useImperativeHandle(ref, () => ({
+-    focus: () => {
+-      inputRef.current.focus();
+-    },
+-  }));
+-  return <input ref={inputRef} />;
+-};
+-
+-FancyInput = forwardRef(FancyInput);
++import React, { useEffect, useRef } from "react";
+
+ const App = () => {
+-  const initialElement = null;
+-  const fancyInputRef = useRef(initialElement);
++  const initialValue = null;
++  const h1Ref = useRef(initialValue);
+
+-  const handleFocus = () => {
+-    console.log(fancyInputRef.current); // only have focus property
+-    fancyInputRef.current.focus();
+-  };
++  useEffect(() => {
++    h1Ref.current.style.display = "none";
++  });
++
++  const n = 10000000;
++  const expensiveValue = [...Array(n + 1).keys()].map((i) => i);
++  const lastCount = expensiveValue[expensiveValue.length - 1];
+
+-  return (
+-    <>
+-      <FancyInput ref={fancyInputRef} />
+-      <button onClick={handleFocus}>focus</button>
+-    </>
+-  );
++  return <h1 ref={h1Ref}>{`Last Count: ${lastCount}`}</h1>;
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-621-d1vum)
+
+</details>
 
 ---
 
