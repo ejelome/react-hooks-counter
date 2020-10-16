@@ -34,6 +34,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [6.2. useLayoutEffect](#62-uselayouteffect)
         - [6.2.1. With useEffect (flickers)](#621-with-useeffect-flickers)
         - [6.2.2. With useLayoutEffect (no flicker)](#622-with-uselayouteffect-no-flicker)
+      - [6.3. useDebugValue](#63-usedebugvalue)
   - [References](#references)
   - [License](#license)
 
@@ -992,6 +993,76 @@ Don't call Hooks &hellip;
 >
 > - `useLayoutEffect` is identical to `useEffect` except it fires _before_ the browser paints
 > - It will block the browser paint until all effects inside it are flushed out (synchronously)
+
+#### 6.3. useDebugValue
+
+<details>
+  <summary>src/useLogger.js</summary>
+
+```diff
+-import { useEffect } from "react";
++import { useDebugValue, useEffect } from "react";
++
++const useLogger = (state) => {
++  useDebugValue(state);
+
+-const useLogger = (state) =>
+   useEffect(() => {
+     console.log(state);
+
+     return console.clear;
+   }, [state]);
++};
+
+ export default useLogger;
+```
+
+</details>
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useLayoutEffect, useRef } from "react";
++import React, { useState } from "react";
++
++import useLogger from "./useLogger";
+
+ const App = () => {
+-  const initialValue = null;
+-  const h1Ref = useRef(initialValue);
++  const initialState = 0;
++  const [count, setCount] = useState(initialState);
++
++  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
++  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+
+-  useLayoutEffect(() => {
+-    h1Ref.current.style.display = "none";
+-  });
+-
+-  const n = 10000000;
+-  const expensiveValue = [...Array(n + 1).keys()].map((i) => i);
+-  const lastCount = expensiveValue[expensiveValue.length - 1];
++  useLogger(count);
+
+-  return <h1 ref={h1Ref}>{`Last Count: ${lastCount}`}</h1>;
++  return (
++    <>
++      <h1>Counter</h1>
++      <button onClick={handleDecrement}>-</button>
++      <code>{count}</code>
++      <button onClick={handleIncrement}>+</button>
++    </>
++  );
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-63-m00nx)
 
 ---
 
