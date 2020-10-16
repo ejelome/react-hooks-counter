@@ -1,34 +1,18 @@
-import React, { forwardRef, useImperativeHandle, useRef } from "react";
-
-let FancyInput = (props, ref) => {
-  const inputRef = useRef();
-
-  useImperativeHandle(ref, () => ({
-    focus: () => {
-      inputRef.current.focus();
-    },
-  }));
-
-  return <input ref={inputRef} />;
-};
-
-FancyInput = forwardRef(FancyInput);
+import React, { useEffect, useRef } from "react";
 
 const App = () => {
-  const initialElement = null;
-  const fancyInputRef = useRef(initialElement);
+  const initialValue = null;
+  const h1Ref = useRef(initialValue);
 
-  const handleFocus = () => {
-    console.log(fancyInputRef.current); // only have focus property
-    fancyInputRef.current.focus();
-  };
+  useEffect(() => {
+    h1Ref.current.style.display = "none";
+  });
 
-  return (
-    <>
-      <FancyInput ref={fancyInputRef} />
-      <button onClick={handleFocus}>focus</button>
-    </>
-  );
+  const n = 10000000;
+  const expensiveValue = [...Array(n + 1).keys()].map((i) => i);
+  const lastCount = expensiveValue[expensiveValue.length - 1];
+
+  return <h1 ref={h1Ref}>{`Last Count: ${lastCount}`}</h1>;
 };
 
 export default App;
