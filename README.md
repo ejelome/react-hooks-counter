@@ -115,9 +115,8 @@ Don't call Hooks &hellip;
 +  const initialState = 0;
 +  const [count, setCount] = useState(initialState);
 +
-+  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
-+
 +  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
++  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
 -function App() {
    return (
@@ -187,9 +186,8 @@ Don't call Hooks &hellip;
    const initialState = 0;
    const [count, setCount] = useState(initialState);
 
-   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
-
    const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+   const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
 +  useEffect(() => {
 +    console.log(count);
@@ -244,9 +242,8 @@ Don't call Hooks &hellip;
 -  const initialState = 0;
 -  const [count, setCount] = useState(initialState);
 -
--  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
--
 -  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
+-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 -
 -  return (
 -    <>
@@ -275,13 +272,13 @@ Don't call Hooks &hellip;
 +  const { Provider } = CounterContext;
 +  const values = { count, increment, decrement };
 
--  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
-+  return <Provider value={values}>{children}</Provider>;
-+};
-
 -  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
 +const Counter = () => {
 +  const { count, increment, decrement } = useContext(CounterContext);
+
+-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
++  return <Provider value={values}>{children}</Provider>;
++};
 
    useEffect(() => {
      console.log(count);
@@ -1034,8 +1031,8 @@ Don't call Hooks &hellip;
 +  const initialState = 0;
 +  const [count, setCount] = useState(initialState);
 +
-+  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 +  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
++  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
 
 -  useLayoutEffect(() => {
 -    h1Ref.current.style.display = "none";
