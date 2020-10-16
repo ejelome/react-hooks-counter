@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 const App = () => {
   const initialValue = null;
   const h1Ref = useRef(initialValue);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     h1Ref.current.style.display = "none";
   });
 
