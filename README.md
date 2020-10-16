@@ -33,6 +33,7 @@ Learn [React](https://reactjs.org) [Hooks](https://reactjs.org/docs/hooks-intro.
       - [6.1. useImperativeHandle](#61-useimperativehandle)
       - [6.2. useLayoutEffect](#62-uselayouteffect)
         - [6.2.1. With useEffect (flickers)](#621-with-useeffect-flickers)
+        - [6.2.2. With useLayoutEffect (no flicker)](#622-with-uselayouteffect-no-flicker)
   - [References](#references)
   - [License](#license)
 
@@ -954,6 +955,43 @@ Don't call Hooks &hellip;
 [&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-621-d1vum)
 
 </details>
+
+##### 6.2.2. With useLayoutEffect (no flicker)
+
+<details>
+  <summary>src/App.js</summary>
+
+```diff
+-import React, { useEffect, useRef } from "react";
++import React, { useLayoutEffect, useRef } from "react";
+
+ const App = () => {
+   const initialValue = null;
+   const h1Ref = useRef(initialValue);
+
+-  useEffect(() => {
++  useLayoutEffect(() => {
+     h1Ref.current.style.display = "none";
+   });
+
+   const n = 10000000;
+   const expensiveValue = [...Array(n + 1).keys()].map((i) => i);
+   const lastCount = expensiveValue[expensiveValue.length - 1];
+
+   return <h1 ref={h1Ref}>{`Last Count: ${lastCount}`}</h1>;
+ };
+
+ export default App;
+```
+
+</details>
+
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-router-lesson-622-dnnv5)
+
+> **NOTES:**
+>
+> - `useLayoutEffect` is identical to `useEffect` except it fires _before_ the browser paints
+> - It will block the browser paint until all effects inside it are flushed out (synchronously)
 
 ---
 
