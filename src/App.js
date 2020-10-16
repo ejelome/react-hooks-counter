@@ -1,18 +1,24 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useState } from "react";
+
+import useLogger from "./useLogger";
 
 const App = () => {
-  const initialValue = null;
-  const h1Ref = useRef(initialValue);
+  const initialState = 0;
+  const [count, setCount] = useState(initialState);
 
-  useLayoutEffect(() => {
-    h1Ref.current.style.display = "none";
-  });
+  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
+  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
 
-  const n = 10000000;
-  const expensiveValue = [...Array(n + 1).keys()].map((i) => i);
-  const lastCount = expensiveValue[expensiveValue.length - 1];
+  useLogger(count);
 
-  return <h1 ref={h1Ref}>{`Last Count: ${lastCount}`}</h1>;
+  return (
+    <>
+      <h1>Counter</h1>
+      <button onClick={handleDecrement}>-</button>
+      <code>{count}</code>
+      <button onClick={handleIncrement}>+</button>
+    </>
+  );
 };
 
 export default App;
