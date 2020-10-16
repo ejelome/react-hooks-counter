@@ -1061,6 +1061,14 @@ Don't call Hooks &hellip;
 
 [&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-63-m00nx)
 
+> **NOTES:**
+>
+> - `useDebugValue` displays a label and value for custom Hooks in React DevTools
+> - It accepts a first argument that acts as the value for the custom Hook label
+> - It also accepts a second argument which is a formatting function that is only called when inspected
+> - Go to `Inspect` > `Components` > `hooks` then `<Hook>` (without the `use` prefix)
+> - It is only recommended to be used on custom Hooks that are part of shared libraries
+
 ---
 
 ## References
