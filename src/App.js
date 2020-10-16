@@ -1,32 +1,32 @@
-import React, { useRef, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 
-import useLogger from "./useLogger";
+let FancyInput = (props, ref) => {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    },
+  }));
+
+  return <input ref={inputRef} />;
+};
+
+FancyInput = forwardRef(FancyInput);
 
 const App = () => {
-  const initialCount = () => 0;
-  const [count, setCount] = useState(initialCount);
-
   const initialElement = null;
-  const codeRef = useRef(initialElement);
+  const fancyInputRef = useRef(initialElement);
 
-  const handleIncrement = () => setCount((prevCount) => prevCount + 1);
-  const handleDecrement = () => setCount((prevCount) => prevCount - 1);
-
-  const handleHideShow = () => {
-    let e = codeRef.current;
-    let visibility = e.style.visibility || "visible";
-    e.style.visibility = visibility === "visible" ? "hidden" : "visible";
+  const handleFocus = () => {
+    console.log(fancyInputRef.current); // only have focus property
+    fancyInputRef.current.focus();
   };
-
-  useLogger(count);
 
   return (
     <>
-      <h1>Counter</h1>
-      <button onClick={handleDecrement}>-</button>
-      <code ref={codeRef}>{count}</code>
-      <button onClick={handleIncrement}>+</button>
-      <button onClick={handleHideShow}>hide/show</button>
+      <FancyInput ref={fancyInputRef} />
+      <button onClick={handleFocus}>focus</button>
     </>
   );
 };
