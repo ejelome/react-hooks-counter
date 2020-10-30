@@ -339,6 +339,7 @@ Don't call Hooks &hellip;
 +const useLogger = (state) =>
 +  useEffect(() => {
 +    console.log(state);
++
 +    return console.clear;
 +  }, [state]);
 +
@@ -351,10 +352,11 @@ Don't call Hooks &hellip;
   <summary>src/App.js</summary>
 
 ```diff
- import React, { createContext, useContext, useEffect, useState } from "react";
-
-+import useLogger from "./useLogger";
+-import React, { createContext, useContext, useEffect, useState } from "react";
++import React, { createContext, useContext, useState } from "react";
 +
++import useLogger from "./useLogger";
+
  const initialContext = {};
  const CounterContext = createContext(initialContext);
 
@@ -404,7 +406,7 @@ Don't call Hooks &hellip;
 
 </details>
 
-[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-4-wpoe7)
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-4-r514l)
 
 > **NOTES:**
 >
@@ -490,7 +492,7 @@ Don't call Hooks &hellip;
 
 </details>
 
-[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-counter-lesson-51-wpoe7)
+[&#9654; Run code &rarr;](https://codesandbox.io/s/react-hooks-lesson-51-7ooti)
 
 > **NOTES:**
 >
